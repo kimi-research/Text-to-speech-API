@@ -2,3 +2,5 @@ numpy==1.26.4
 soundfile
 style-bert-vits2
 fastapi
+uvicorn
+python-multipart
