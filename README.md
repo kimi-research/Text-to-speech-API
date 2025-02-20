@@ -21,9 +21,9 @@ $ cp -r </path/to/your/models> ./app/models/weights/Style-Bert-VITS2/<your_model
 ```
 $ vi ./app/services/inference.py
   ...
-  model_path = "<your_model>/*.safetensors"
-  config_path = "<your_model>/config.json"
-  style_vec_path = "<your_model>/style_vectors.npy"
+  model_path = "<your_models>/*.safetensors"
+  config_path = "<your_models>/config.json"
+  style_vec_path = "<your_models>/style_vectors.npy"
 ```
 ## Usage
 ### Launch WebAPI
