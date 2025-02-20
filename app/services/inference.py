@@ -3,7 +3,7 @@ import os
 import soundfile as sf
 import torch
 
-from models.model_loader import load_model
+from app.models.model_loader import load_model
 
 model_root = "app/models/weights/Style-Bert-VITS2"
 model_path = "jvnv-F1-jp/jvnv-F1-jp_e160_s14000.safetensors"
