@@ -10,6 +10,8 @@ Currently, this API supports only **[Style-Bert-VITS2](https://github.com/litagi
 ```
 $ git clone https://github.com/kimi-research/Text-to-speech-API.git
 $ cd Text-to-speech-API
+# Install PyTorch(cpu) at first
+$ pip install -r requirements_pytorch.txt
 $ pip install -r requirements.txt
 ```
 ### 2. Preparation of Style-Bert-VITS2 model
