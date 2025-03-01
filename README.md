@@ -7,7 +7,7 @@ Currently, this API supports only **[Style-Bert-VITS2](https://github.com/litagi
 ## Setup
 
 ### 1. Install and build environment
-```
+```sh
 $ git clone https://github.com/kimi-research/Text-to-speech-API.git
 $ cd Text-to-speech-API
 # Install PyTorch(cpu) at first
@@ -15,12 +15,12 @@ $ pip install -r requirements_pytorch.txt
 $ pip install -r requirements.txt
 ```
 ### 2. Preparation of Style-Bert-VITS2 model
-```
+```sh
 $ mkdir -p ./app/models/weights/Style-Bert-VITS2
 $ cp -r </path/to/your/models> ./app/models/weights/Style-Bert-VITS2/<your_models>
 ```
 ### 3. Set up the model to use
-```
+```sh
 $ vi ./app/services/inference.py
   ...
   model_path = "<your_models>/*.safetensors"
@@ -29,6 +29,6 @@ $ vi ./app/services/inference.py
 ```
 ## Usage
 ### Launch WebAPI
-```
+```sh
 $ ./run.sh
 ```
