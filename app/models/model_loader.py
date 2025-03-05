@@ -9,6 +9,7 @@ from style_bert_vits2.tts_model import TTSModel
 # ignore FutureWarning
 warnings.simplefilter("ignore", FutureWarning)
 
+
 class SBV2Model(nn.Module):
     def __init__(self, model_path, config_path, style_vec_path, **kwargs):
         """Initialize Style-Bert-VITS2 model"""
@@ -37,6 +38,6 @@ def load_model(model_type, **kwargs):
     # available TTS class
     model_classes = {"SBV2": SBV2Model}
     # Define TTS model
-    model = model_classes[model_type](**kwargs)
+    model = model_classes[model_type](**kwargs).requires_grad_(False)
     model.eval()
     return model

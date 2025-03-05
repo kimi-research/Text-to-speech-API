@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>テキスト音声合成ツール</title>
+</head>
+<body>
+    <h1 style="font-size: 24px;">テキストから音声へ</h1>
+    <textarea id="textInput" placeholder="テキストを入力"></textarea>
+    <button onclick="sendText()">生成</button>
+
+    <script>
+        async function sendText() {
+            const text = document.getElementById("textInput").value.trim(); // 空白を削除
+            if (!text) {
+                alert("Please enter some text.");
+                return;
+            }
+
+			    const response = await fetch("{{ form_action }}", {  // /generate/ にPOST
+                method: "POST",
+                headers: { "Content-Type": "application/json" }, // application/jsonを指定
+                body: JSON.stringify({ "text": text }) // JSON形式で送信
+            });
+
+            // JSONResponse（エラー時）
+            if (response.headers.get("content-type")?.includes("application/json")) {
+                const result = await response.json();
+                alert(result.message);
+                return;
+            }
+
+            // FileResponse（正常時）
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+
+                // Content-Dispositionヘッダーからファイル名を取得
+                const contentDisposition = response.headers.get("Content-Disposition");
+                let filename = "downloaded_audio.wav"; // デフォルト値
+                
+                if (contentDisposition) {
+                    const match = contentDisposition.match(/filename="(.+)"/);
+                    if (match) {
+                        filename = match[1];
+                    }
+                }
+
+                // 自動ダウンロード
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = filename; // 取得したファイル名を適用
+                document.body.appendChild(a);
+                a.click(); // 自動でクリックしてダウンロード開始
+                document.body.removeChild(a); // クリック後に削除
+                window.URL.revokeObjectURL(url); // メモリ解放
+            }
+        }
+    </script>
+</body>
+</html>

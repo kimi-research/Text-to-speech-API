@@ -7,7 +7,7 @@
 
 <body>
     <h2>テキストを入力して音声を生成</h2>
-    <form action="/generate/" method="post">
+    <form action="{{ form_action }}" method="post">
         <label for="text">テキスト:</label>
         <input type="text" id="text" name="text" required>
         <button type="submit">生成</button>
