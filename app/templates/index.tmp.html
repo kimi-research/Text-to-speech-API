@@ -3,43 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>テキスト音声合成ツール</title>
+    <title>FastAPI TTS</title>
+    <style>
+        h1 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
-    <h1 style="font-size: 24px;">テキストから音声へ</h1>
+    <h1>テキストから音声へ</h1>
     <textarea id="textInput" placeholder="テキストを入力"></textarea>
-    <button onclick="sendText()">生成</button>
+    <button id="sendButton" onclick="sendText()">生成</button>
+
+    <!-- 注意書きのスペース -->
+    <div class="notice-container">
+        <strong>ご利用時のご案内:</strong>
+        <ul>
+            <li>入力は20文字以内にしてください。</li>
+            <li>音声の生成に時間がかかる場合があります。</li>
+        </ul>
+    </div>
 
     <script>
+        let isProcessing = false; // 処理中かどうかを管理
+
         async function sendText() {
-            const text = document.getElementById("textInput").value.trim(); // 空白を削除
-            if (!text) {
-                alert("Please enter some text.");
+            if (isProcessing) {
+                alert("現在処理中です。完了するまでお待ちください。");
                 return;
             }
 
-			    const response = await fetch("{{ form_action }}", {  // /generate/ にPOST
+            const text = document.getElementById("textInput").value.trim();
+            if (!text) {
+                alert("テキストを入力してください。");
+                return;
+            }
+
+            // 送信開始
+            isProcessing = true;
+            const button = document.getElementById("sendButton");
+            button.disabled = true;
+            button.textContent = "生成中...";
+
+            const response = await fetch("{{ form_action }}", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" }, // application/jsonを指定
-                body: JSON.stringify({ "text": text }) // JSON形式で送信
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ "text": text })
             });
 
-            // JSONResponse（エラー時）
             if (response.headers.get("content-type")?.includes("application/json")) {
                 const result = await response.json();
                 alert(result.message);
-                return;
             }
 
-            // FileResponse（正常時）
             if (response.ok) {
                 const blob = await response.blob();
                 const url = window.URL.createObjectURL(blob);
 
-                // Content-Dispositionヘッダーからファイル名を取得
                 const contentDisposition = response.headers.get("Content-Disposition");
-                let filename = "downloaded_audio.wav"; // デフォルト値
-                
+                let filename = "downloaded_audio.wav";
+
                 if (contentDisposition) {
                     const match = contentDisposition.match(/filename="(.+)"/);
                     if (match) {
@@ -47,16 +72,20 @@
                     }
                 }
 
-                // 自動ダウンロード
                 const a = document.createElement("a");
                 a.href = url;
-                a.download = filename; // 取得したファイル名を適用
+                a.download = filename;
                 document.body.appendChild(a);
-                a.click(); // 自動でクリックしてダウンロード開始
-                document.body.removeChild(a); // クリック後に削除
-                window.URL.revokeObjectURL(url); // メモリ解放
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
             }
+            // ここで処理完了を確実にリセット
+            isProcessing = false;
+            button.disabled = false;
+            button.textContent = "生成";
         }
     </script>
 </body>
 </html>
+
